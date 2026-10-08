@@ -623,3 +623,389 @@ input {
   background: #eef3ff;
   border-color: #bfcdf5;
 }
+
+/* ==================== 主界面 + 左侧导航栏 ==================== */
+
+.app-layout {
+  min-height: 100vh;
+  display: flex;
+  background: #f5f7fb;
+}
+
+/* 左侧导航栏 */
+.sidebar {
+  width: 250px;
+  min-height: 100vh;
+  background: white;
+  border-right: 1px solid #edf0f5;
+  padding: 28px 18px;
+  display: flex;
+  flex-direction: column;
+  position: fixed;
+  left: 0;
+  top: 0;
+  bottom: 0;
+}
+
+.sidebar-logo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0 10px;
+  margin-bottom: 45px;
+}
+
+.logo-icon {
+  width: 42px;
+  height: 42px;
+  border-radius: 11px;
+  background: #eef3ff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 22px;
+  flex-shrink: 0;
+}
+
+.sidebar-logo h2 {
+  margin: 0 0 4px;
+  font-size: 15px;
+  color: #1f2937;
+}
+
+.sidebar-logo span {
+  font-size: 11px;
+  color: #9aa3b2;
+}
+
+/* 导航 */
+.sidebar-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.nav-item {
+  width: 100%;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  padding: 0 15px;
+  border: none;
+  border-radius: 10px;
+  background: transparent;
+  color: #6b7280;
+  font-size: 14px;
+  cursor: pointer;
+  text-align: left;
+  transition: 0.2s;
+}
+
+.nav-item:hover {
+  background: #f5f7fb;
+  color: #4f7cff;
+}
+
+.nav-item.active {
+  background: #eef3ff;
+  color: #4f7cff;
+  font-weight: 600;
+}
+
+.nav-item span:first-child {
+  width: 22px;
+  text-align: center;
+  font-size: 17px;
+}
+
+/* 左下角用户信息 */
+.sidebar-bottom {
+  margin-top: auto;
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 15px 10px;
+  border-top: 1px solid #edf0f5;
+  margin-bottom: 10px;
+}
+
+.user-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: #4f7cff;
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 14px;
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
+.user-info div:last-child {
+  min-width: 0;
+}
+
+.user-info strong {
+  display: block;
+  font-size: 13px;
+  color: #374151;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.user-info span {
+  display: block;
+  margin-top: 3px;
+  font-size: 11px;
+  color: #9aa3b2;
+}
+
+.sidebar .logout-button {
+  width: 100%;
+}
+
+/* 主内容区域 */
+.main-content {
+  flex: 1;
+  margin-left: 250px;
+  min-height: 100vh;
+  padding: 40px 50px;
+}
+
+/* 页面标题 */
+.page-header {
+  max-width: 1100px;
+  margin: 0 auto 28px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.page-header h1 {
+  margin: 0 0 8px;
+  font-size: 28px;
+  color: #1f2937;
+}
+
+.page-header p {
+  margin: 0;
+  font-size: 14px;
+  color: #8b95a7;
+}
+
+/* 首页欢迎卡片 */
+.welcome-card {
+  max-width: 1100px;
+  margin: 0 auto 25px;
+  padding: 32px 36px;
+  border-radius: 18px;
+  background: linear-gradient(135deg, #eef3ff, #f7f9ff);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.welcome-card h2 {
+  margin: 0 0 10px;
+  font-size: 22px;
+  color: #1f2937;
+}
+
+.welcome-card p {
+  margin: 0 0 22px;
+  color: #7d8798;
+  font-size: 14px;
+}
+
+.home-action-button {
+  border: none;
+  background: #4f7cff;
+  color: white;
+  padding: 11px 20px;
+  border-radius: 9px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.home-action-button:hover {
+  background: #3d68e6;
+}
+
+.welcome-icon {
+  width: 110px;
+  height: 110px;
+  border-radius: 50%;
+  background: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 50px;
+}
+
+/* 首页数据卡片 */
+.home-stats {
+  max-width: 1100px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+
+.home-stat-card {
+  background: white;
+  border-radius: 15px;
+  padding: 22px;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  box-shadow: 0 8px 30px rgba(31, 41, 55, 0.05);
+}
+
+.stat-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  background: #f3f6ff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 22px;
+}
+
+.home-stat-card strong {
+  display: block;
+  font-size: 24px;
+  color: #1f2937;
+}
+
+.home-stat-card span:last-child {
+  display: block;
+  margin-top: 4px;
+  font-size: 12px;
+  color: #9aa3b2;
+}
+
+/* 占位页面 */
+.placeholder-page {
+  min-height: 70vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+.placeholder-icon {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: #eef3ff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 36px;
+  margin-bottom: 20px;
+}
+
+.placeholder-page h1 {
+  margin: 0 0 10px;
+  font-size: 26px;
+  color: #1f2937;
+}
+
+.placeholder-page p {
+  margin: 0 0 6px;
+  color: #6b7280;
+  font-size: 15px;
+}
+
+.placeholder-page span {
+  color: #9aa3b2;
+  font-size: 13px;
+}
+
+/* 任务页面适配新布局 */
+.main-content .task-page {
+  min-height: auto;
+  padding: 0;
+  background: transparent;
+}
+
+.main-content .task-header {
+  display: none;
+}
+
+.main-content .task-content {
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+/* 手机端 */
+@media (max-width: 800px) {
+  .sidebar {
+    width: 70px;
+    padding: 20px 10px;
+  }
+
+  .sidebar-logo {
+    justify-content: center;
+    padding: 0;
+    margin-bottom: 35px;
+  }
+
+  .sidebar-logo > div:last-child {
+    display: none;
+  }
+
+  .nav-item {
+    justify-content: center;
+    padding: 0;
+  }
+
+  .nav-item span:last-child {
+    display: none;
+  }
+
+  .user-info {
+    justify-content: center;
+    padding: 12px 0;
+  }
+
+  .user-info > div:last-child {
+    display: none;
+  }
+
+  .sidebar .logout-button {
+    font-size: 0;
+    padding: 10px;
+  }
+
+  .sidebar .logout-button::after {
+    content: '↪';
+    font-size: 16px;
+  }
+
+  .main-content {
+    margin-left: 70px;
+    padding: 25px 20px;
+  }
+
+  .home-stats {
+    grid-template-columns: 1fr;
+  }
+
+  .welcome-card {
+    padding: 25px;
+  }
+
+  .welcome-icon {
+    display: none;
+  }
+}

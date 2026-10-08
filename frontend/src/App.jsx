@@ -9,6 +9,9 @@ function App() {
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
 
+  // 当前页面
+  const [currentPage, setCurrentPage] = useState('home')
+
   // 任务
   const [tasks, setTasks] = useState([])
   const [showTaskForm, setShowTaskForm] = useState(false)
@@ -17,8 +20,9 @@ function App() {
   const [taskDescription, setTaskDescription] = useState('')
   const [taskDeadline, setTaskDeadline] = useState('')
 
-  // 当前正在编辑的任务
   const [editingTaskId, setEditingTaskId] = useState(null)
+
+  // ==================== 登录 / 注册 ====================
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -52,6 +56,7 @@ function App() {
         if (response.ok) {
           alert(`登录成功！欢迎你，${data.user.username}`)
           setIsLoggedIn(true)
+          setCurrentPage('home')
         } else {
           alert(data.message || '登录失败')
         }
@@ -93,7 +98,8 @@ function App() {
     }
   }
 
-  // 添加任务
+  // ==================== 任务功能 ====================
+
   const handleAddTask = (e) => {
     e.preventDefault()
 
@@ -118,7 +124,6 @@ function App() {
     setShowTaskForm(false)
   }
 
-  // 打开编辑窗口
   const handleEditTask = (task) => {
     setEditingTaskId(task.id)
 
@@ -129,7 +134,6 @@ function App() {
     setShowTaskForm(true)
   }
 
-  // 保存编辑
   const handleUpdateTask = (e) => {
     e.preventDefault()
 
@@ -158,7 +162,6 @@ function App() {
     setShowTaskForm(false)
   }
 
-  // 完成 / 取消完成
   const toggleTask = (id) => {
     setTasks(
       tasks.map((task) =>
@@ -169,139 +172,330 @@ function App() {
     )
   }
 
-  // 删除任务
   const deleteTask = (id) => {
     setTasks(tasks.filter((task) => task.id !== id))
   }
 
-  // 关闭任务弹窗
   const closeTaskForm = () => {
     setShowTaskForm(false)
-
     setTaskTitle('')
     setTaskDescription('')
     setTaskDeadline('')
     setEditingTaskId(null)
   }
 
-  // ==================== 任务页面 ====================
+  // ==================== 登录后的主界面 ====================
 
   if (isLoggedIn) {
     return (
-      <div className="task-page">
+      <div className="app-layout">
 
-        <div className="task-header">
-          <div>
-            <h1>我的任务</h1>
-            <p>你好，{username}！今天也要加油完成任务哦～</p>
+        {/* 左侧导航栏 */}
+        <aside className="sidebar">
+
+          <div className="sidebar-logo">
+            <div className="logo-icon">⏰</div>
+            <div>
+              <h2>反拖延监督系统</h2>
+              <span>大学生时间管理助手</span>
+            </div>
           </div>
 
-          <button
-            className="logout-button"
-            onClick={() => {
-              setIsLoggedIn(false)
-              setUsername('')
-              setPassword('')
-            }}
-          >
-            退出登录
-          </button>
-        </div>
+          <nav className="sidebar-nav">
 
-        <div className="task-content">
+            <button
+              className={`nav-item ${
+                currentPage === 'home' ? 'active' : ''
+              }`}
+              onClick={() => setCurrentPage('home')}
+            >
+              <span>🏠</span>
+              <span>首页</span>
+            </button>
 
-          <div className="task-top">
-            <div>
-              <h2>任务列表</h2>
+            <button
+              className={`nav-item ${
+                currentPage === 'tasks' ? 'active' : ''
+              }`}
+              onClick={() => setCurrentPage('tasks')}
+            >
+              <span>📝</span>
+              <span>我的任务</span>
+            </button>
 
-              <p className="task-count">
-                共 {tasks.length} 个任务
-              </p>
+            <button
+              className={`nav-item ${
+                currentPage === 'focus' ? 'active' : ''
+              }`}
+              onClick={() => setCurrentPage('focus')}
+            >
+              <span>⏱️</span>
+              <span>专注</span>
+            </button>
+
+            <button
+              className={`nav-item ${
+                currentPage === 'statistics' ? 'active' : ''
+              }`}
+              onClick={() => setCurrentPage('statistics')}
+            >
+              <span>📊</span>
+              <span>数据统计</span>
+            </button>
+
+          </nav>
+
+          <div className="sidebar-bottom">
+
+            <div className="user-info">
+              <div className="user-avatar">
+                {username.charAt(0).toUpperCase()}
+              </div>
+
+              <div>
+                <strong>{username}</strong>
+                <span>普通用户</span>
+              </div>
             </div>
 
             <button
-              className="add-task-button"
+              className="logout-button"
               onClick={() => {
-                setEditingTaskId(null)
-                setTaskTitle('')
-                setTaskDescription('')
-                setTaskDeadline('')
-                setShowTaskForm(true)
+                setIsLoggedIn(false)
+                setUsername('')
+                setPassword('')
               }}
             >
-              + 添加任务
+              退出登录
             </button>
+
           </div>
 
-          {tasks.length === 0 ? (
-            <div className="empty-task">
-              <div className="empty-icon">📝</div>
+        </aside>
 
-              <h3>暂时没有任务</h3>
+        {/* 主内容区域 */}
+        <main className="main-content">
 
-              <p>
-                添加一个任务，开始管理你的学习计划吧！
-              </p>
-            </div>
-          ) : (
-            <div className="task-list">
+          {/* ==================== 首页 ==================== */}
 
-              {tasks.map((task) => (
-                <div
-                  className={`task-item ${
-                    task.completed ? 'completed' : ''
-                  }`}
-                  key={task.id}
-                >
+          {currentPage === 'home' && (
+            <div className="home-page">
 
-                  <div className="task-check">
-                    <button
-                      onClick={() => toggleTask(task.id)}
-                      className="check-button"
-                    >
-                      {task.completed ? '✓' : ''}
-                    </button>
-                  </div>
-
-                  <div className="task-info">
-
-                    <h3>{task.title}</h3>
-
-                    {task.description && (
-                      <p>{task.description}</p>
-                    )}
-
-                    {task.deadline && (
-                      <span className="task-deadline">
-                        截止时间：{task.deadline}
-                      </span>
-                    )}
-
-                  </div>
-
-                  <button
-                    className="edit-task-button"
-                    onClick={() => handleEditTask(task)}
-                  >
-                    编辑
-                  </button>
-
-                  <button
-                    className="delete-task-button"
-                    onClick={() => deleteTask(task.id)}
-                  >
-                    删除
-                  </button>
-
+              <div className="page-header">
+                <div>
+                  <h1>你好，{username}！</h1>
+                  <p>今天也要保持专注，完成自己的目标吧～</p>
                 </div>
-              ))}
+              </div>
+
+              <div className="welcome-card">
+                <div>
+                  <h2>今天也不要拖延哦！</h2>
+                  <p>
+                    合理安排时间，从完成一个小任务开始。
+                  </p>
+
+                  <button
+                    className="home-action-button"
+                    onClick={() => setCurrentPage('tasks')}
+                  >
+                    查看我的任务
+                  </button>
+                </div>
+
+                <div className="welcome-icon">
+                  🎯
+                </div>
+              </div>
+
+              <div className="home-stats">
+
+                <div className="home-stat-card">
+                  <span className="stat-icon">📝</span>
+                  <div>
+                    <strong>{tasks.length}</strong>
+                    <span>全部任务</span>
+                  </div>
+                </div>
+
+                <div className="home-stat-card">
+                  <span className="stat-icon">✅</span>
+                  <div>
+                    <strong>
+                      {tasks.filter((task) => task.completed).length}
+                    </strong>
+                    <span>已完成任务</span>
+                  </div>
+                </div>
+
+                <div className="home-stat-card">
+                  <span className="stat-icon">⏳</span>
+                  <div>
+                    <strong>
+                      {tasks.filter((task) => !task.completed).length}
+                    </strong>
+                    <span>待完成任务</span>
+                  </div>
+                </div>
+
+              </div>
 
             </div>
           )}
 
-        </div>
+          {/* ==================== 任务页面 ==================== */}
 
-        {/* 添加 / 编辑任务弹窗 */}
+          {currentPage === 'tasks' && (
+            <div className="task-page">
+
+              <div className="page-header">
+                <div>
+                  <h1>我的任务</h1>
+                  <p>管理你的学习计划和待办事项</p>
+                </div>
+
+                <button
+                  className="add-task-button"
+                  onClick={() => {
+                    setEditingTaskId(null)
+                    setTaskTitle('')
+                    setTaskDescription('')
+                    setTaskDeadline('')
+                    setShowTaskForm(true)
+                  }}
+                >
+                  + 添加任务
+                </button>
+              </div>
+
+              <div className="task-content">
+
+                <div className="task-top">
+                  <div>
+                    <h2>任务列表</h2>
+
+                    <p className="task-count">
+                      共 {tasks.length} 个任务
+                    </p>
+                  </div>
+                </div>
+
+                {tasks.length === 0 ? (
+                  <div className="empty-task">
+
+                    <div className="empty-icon">📝</div>
+
+                    <h3>暂时没有任务</h3>
+
+                    <p>
+                      添加一个任务，开始管理你的学习计划吧！
+                    </p>
+
+                  </div>
+                ) : (
+                  <div className="task-list">
+
+                    {tasks.map((task) => (
+                      <div
+                        className={`task-item ${
+                          task.completed ? 'completed' : ''
+                        }`}
+                        key={task.id}
+                      >
+
+                        <div className="task-check">
+                          <button
+                            onClick={() => toggleTask(task.id)}
+                            className="check-button"
+                          >
+                            {task.completed ? '✓' : ''}
+                          </button>
+                        </div>
+
+                        <div className="task-info">
+
+                          <h3>{task.title}</h3>
+
+                          {task.description && (
+                            <p>{task.description}</p>
+                          )}
+
+                          {task.deadline && (
+                            <span className="task-deadline">
+                              截止时间：{task.deadline}
+                            </span>
+                          )}
+
+                        </div>
+
+                        <button
+                          className="edit-task-button"
+                          onClick={() => handleEditTask(task)}
+                        >
+                          编辑
+                        </button>
+
+                        <button
+                          className="delete-task-button"
+                          onClick={() => deleteTask(task.id)}
+                        >
+                          删除
+                        </button>
+
+                      </div>
+                    ))}
+
+                  </div>
+                )}
+
+              </div>
+
+            </div>
+          )}
+
+          {/* ==================== 专注页面 ==================== */}
+
+          {currentPage === 'focus' && (
+            <div className="placeholder-page">
+
+              <div className="placeholder-icon">⏱️</div>
+
+              <h1>专注</h1>
+
+              <p>
+                番茄钟功能正在开发中
+              </p>
+
+              <span>
+                后续将由团队成员完成专注功能
+              </span>
+
+            </div>
+          )}
+
+          {/* ==================== 数据统计页面 ==================== */}
+
+          {currentPage === 'statistics' && (
+            <div className="placeholder-page">
+
+              <div className="placeholder-icon">📊</div>
+
+              <h1>数据统计</h1>
+
+              <p>
+                数据统计功能正在开发中
+              </p>
+
+              <span>
+                后续将展示任务完成情况和专注数据
+              </span>
+
+            </div>
+          )}
+
+        </main>
+
+        {/* ==================== 添加 / 编辑任务弹窗 ==================== */}
 
         {showTaskForm && (
           <div className="modal-overlay">
