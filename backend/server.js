@@ -86,6 +86,53 @@ app.post("/api/register", async (req, res) => {
     }
 });
 
+// 用户登录
+app.post("/api/login", async (req, res) => {
+    const { username, password } = req.body;
+
+    if (!username || !password) {
+        return res.status(400).json({
+            message: "用户名和密码不能为空"
+        });
+    }
+
+    try {
+        const [users] = await db.execute(
+            "SELECT id, username, password FROM users WHERE username = ?",
+            [username]
+        );
+
+        if (users.length === 0) {
+            return res.status(401).json({
+                message: "用户名或密码错误"
+            });
+        }
+
+        const user = users[0];
+
+        if (user.password !== password) {
+            return res.status(401).json({
+                message: "用户名或密码错误"
+            });
+        }
+
+        res.json({
+            message: "登录成功",
+            user: {
+                id: user.id,
+                username: user.username
+            }
+        });
+
+    } catch (error) {
+        console.error(error);
+
+        res.status(500).json({
+            message: "登录失败"
+        });
+    }
+});
+
 const PORT = 3000;
 
 app.listen(PORT, () => {
