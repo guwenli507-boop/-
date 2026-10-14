@@ -1,0 +1,225 @@
+/* =========================
+   系统统一主题样式
+   大学生反拖延监督系统
+   ========================= */
+
+
+:root {
+
+  /* 主色调：蓝紫色 */
+  --primary-color: #667eea;
+  --secondary-color: #764ba2;
+
+
+  /* 页面背景 */
+  --background-color: #f5f7fb;
+
+
+  /* 卡片背景 */
+  --card-color: #ffffff;
+
+
+  /* 文字颜色 */
+  --text-color: #333333;
+  --gray-text: #666666;
+
+
+  /* 辅助颜色 */
+  --success-color: #67c23a;
+  --warning-color: #e6a23c;
+  --danger-color: #f56c6c;
+
+
+  /* 阴影 */
+  --card-shadow:
+    0 8px 20px rgba(0,0,0,0.08);
+
+
+  /* 圆角 */
+  --radius-large: 20px;
+  --radius-medium: 16px;
+  --radius-small: 12px;
+
+}
+
+
+
+/* =========================
+   全局页面基础
+   ========================= */
+
+
+body {
+
+  margin: 0;
+
+  font-family:
+    "Microsoft YaHei",
+    "Inter",
+    sans-serif;
+
+  background:
+    var(--background-color);
+
+  color:
+    var(--text-color);
+
+}
+
+
+
+/* =========================
+   通用卡片
+   用于：
+   任务
+   统计
+   番茄钟
+   积分
+   ========================= */
+
+
+.common-card {
+
+  background:
+    var(--card-color);
+
+  border-radius:
+    var(--radius-large);
+
+  padding: 24px;
+
+  box-shadow:
+    var(--card-shadow);
+
+}
+
+
+
+/* =========================
+   页面标题
+   ========================= */
+
+
+.page-title {
+
+  font-size: 28px;
+
+  font-weight: 700;
+
+  color:
+    var(--text-color);
+
+}
+
+
+.page-description {
+
+  font-size: 14px;
+
+  color:
+    var(--gray-text);
+
+}
+
+
+
+/* =========================
+   主按钮
+   ========================= */
+
+
+.primary-button {
+
+  background:
+    linear-gradient(
+      135deg,
+      var(--primary-color),
+      var(--secondary-color)
+    );
+
+
+  color: white;
+
+
+  border: none;
+
+
+  border-radius:
+    var(--radius-small);
+
+
+  padding:
+    12px 24px;
+
+
+  font-size: 16px;
+
+
+  cursor: pointer;
+
+
+  transition: 0.3s;
+
+}
+
+
+
+.primary-button:hover {
+
+  opacity: 0.9;
+
+  transform:
+    translateY(-2px);
+
+}
+
+
+
+/* =========================
+   输入框
+   ========================= */
+
+
+.common-input {
+
+  width: 100%;
+
+  padding: 12px 16px;
+
+  border-radius:
+    var(--radius-small);
+
+  border:
+    1px solid #ddd;
+
+  outline: none;
+
+  font-size: 15px;
+
+}
+
+
+.common-input:focus {
+
+  border-color:
+    var(--primary-color);
+
+}
+
+
+
+/* =========================
+   数据展示数字
+   ========================= */
+
+
+.stat-number {
+
+  font-size: 32px;
+
+  font-weight: bold;
+
+  color:
+    var(--primary-color);
+
+}

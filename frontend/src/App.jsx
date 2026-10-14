@@ -349,36 +349,44 @@ function App() {
             <div className="task-page">
 
               <div className="page-header">
-                <div>
-                  <h1>我的任务</h1>
-                  <p>管理你的学习计划和待办事项</p>
-                </div>
+  <div>
+    <h1 className="page-title">
+      我的任务
+    </h1>
 
-                <button
-                  className="add-task-button"
-                  onClick={() => {
-                    setEditingTaskId(null)
-                    setTaskTitle('')
-                    setTaskDescription('')
-                    setTaskDeadline('')
-                    setShowTaskForm(true)
-                  }}
-                >
-                  + 添加任务
-                </button>
-              </div>
+    <p className="page-description">
+      管理你的学习计划和待办事项
+    </p>
+  </div>
 
-              <div className="task-content">
+  <button
+    className="primary-button"
+    onClick={() => {
+      setEditingTaskId(null)
+      setTaskTitle('')
+      setTaskDescription('')
+      setTaskDeadline('')
+      setShowTaskForm(true)
+    }}
+  >
+    + 添加任务
+  </button>
+</div>
 
-                <div className="task-top">
-                  <div>
-                    <h2>任务列表</h2>
 
-                    <p className="task-count">
-                      共 {tasks.length} 个任务
-                    </p>
-                  </div>
-                </div>
+<div className="task-content">
+
+  <div className="task-top">
+    <div>
+      <h2>
+        任务列表
+      </h2>
+
+      <p className="task-count">
+        共 {tasks.length} 个任务
+      </p>
+    </div>
+  </div>
 
                 {tasks.length === 0 ? (
                   <div className="empty-task">
@@ -397,7 +405,7 @@ function App() {
 
                     {tasks.map((task) => (
                       <div
-                        className={`task-item ${
+                        className={`common-card task-item ${
                           task.completed ? 'completed' : ''
                         }`}
                         key={task.id}
