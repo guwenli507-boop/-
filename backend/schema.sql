@@ -47,3 +47,30 @@ CREATE TABLE IF NOT EXISTS daily_checkins (
 ) ENGINE=InnoDB
   DEFAULT CHARSET=utf8mb4
   COLLATE=utf8mb4_unicode_ci;
+
+
+USE anti_procrastination;
+
+CREATE TABLE IF NOT EXISTS supervision_relationships (
+    id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+    requester_id BIGINT UNSIGNED NOT NULL COMMENT '发起邀请的用户',
+    receiver_id BIGINT UNSIGNED NOT NULL COMMENT '接收邀请的用户',
+    status ENUM('pending', 'accepted', 'rejected')
+        NOT NULL DEFAULT 'pending',
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+        ON UPDATE CURRENT_TIMESTAMP,
+    PRIMARY KEY (id),
+    KEY idx_supervision_requester (requester_id, status),
+    KEY idx_supervision_receiver (receiver_id, status),
+    CONSTRAINT fk_supervision_requester
+        FOREIGN KEY (requester_id) REFERENCES users(id)
+        ON DELETE CASCADE,
+    CONSTRAINT fk_supervision_receiver
+        FOREIGN KEY (receiver_id) REFERENCES users(id)
+        ON DELETE CASCADE,
+    CONSTRAINT chk_supervision_different_users
+        CHECK (requester_id <> receiver_id)
+) ENGINE=InnoDB
+  DEFAULT CHARSET=utf8mb4
+  COLLATE=utf8mb4_unicode_ci;
