@@ -6,6 +6,11 @@ const mysql = require("mysql2/promise");
 
 const app = express();
 
+console.log("当前工作目录：", process.cwd());
+console.log("当前服务文件：", __filename);
+
+console.log("当前后端文件路径：", __filename);
+
 app.use(cors());
 app.use(express.json());
 
@@ -23,6 +28,21 @@ const db = mysql.createPool({
 });
 
 // ====================
+// 注册各模块路由
+// ====================
+
+// 专注记录接口
+app.use("/api/focus", require("./focusRoutes")(db));
+
+// 每日打卡接口
+app.use("/api/checkins", require("./checkinRoutes")(db));
+
+// 数据统计接口
+app.use("/api/stats", require("./statsRoutes")(db));
+
+
+
+// ====================
 // 测试数据库连接
 // ====================
 async function testDatabase() {
@@ -36,6 +56,12 @@ async function testDatabase() {
 }
 
 testDatabase();
+
+app.get("/api/route-test", (req, res) => {
+    res.json({
+        message: "当前 server.js 测试路由正常"
+    });
+});
 
 // ====================
 // 首页

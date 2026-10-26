@@ -1,0 +1,110 @@
+
+const express = require("express");
+
+module.exports = function (db) {
+    const router = express.Router();
+
+    // 查询用户的专注统计数据
+    router.get("/focus", async (req, res) => {
+        const userId = Number(req.query.userId);
+
+        if (!Number.isInteger(userId) || userId <= 0) {
+            return res.status(400).json({
+                message: "请提供有效的 userId"
+            });
+        }
+
+        try {
+            // 今日和本周专注统计
+            const [summaryRows] = await db.execute(
+                `SELECT
+                    COALESCE(SUM(
+                        CASE
+                            WHEN DATE(start_time) = CURDATE()
+                            THEN duration ELSE 0
+                        END
+                    ), 0) AS todayMinutes,
+                    COALESCE(SUM(
+                        CASE
+                            WHEN YEARWEEK(start_time, 1) =
+                                 YEARWEEK(CURDATE(), 1)
+                            THEN duration ELSE 0
+                        END
+                    ), 0) AS weekMinutes,
+                    COUNT(
+                        CASE
+                            WHEN DATE(start_time) = CURDATE()
+                            THEN 1
+                        END
+                    ) AS todaySessions,
+                    COUNT(*) AS totalSessions
+                 FROM focus_records
+                 WHERE user_id = ?
+                   AND start_time IS NOT NULL`,
+                [userId]
+            );
+
+            // 最近7天每日专注时长
+            const [dailyRows] = await db.execute(
+                `SELECT
+                    DATE(start_time) AS date,
+                    COALESCE(SUM(duration), 0) AS minutes,
+                    COUNT(*) AS sessions
+                 FROM focus_records
+                 WHERE user_id = ?
+                   AND start_time >= DATE_SUB(CURDATE(), INTERVAL 6 DAY)
+                   AND start_time < DATE_ADD(CURDATE(), INTERVAL 1 DAY)
+                 GROUP BY DATE(start_time)
+                 ORDER BY DATE(start_time) ASC`,
+                [userId]
+            );
+
+            res.json({
+                message: "统计查询成功",
+                data: {
+                    summary: summaryRows[0],
+                    dailyTrend: dailyRows
+                }
+            });
+        } catch (error) {
+            console.error("专注统计查询失败：", error.message);
+            res.status(500).json({
+                message: "统计查询失败，请检查数据库表结构"
+            });
+        }
+    });
+
+    // 查询用户的打卡统计
+    router.get("/checkins", async (req, res) => {
+        const userId = Number(req.query.userId);
+
+        if (!Number.isInteger(userId) || userId <= 0) {
+            return res.status(400).json({
+                message: "请提供有效的 userId"
+            });
+        }
+
+        try {
+            const [rows] = await db.execute(
+                `SELECT
+                    COUNT(*) AS totalCheckins,
+                    SUM(checkin_date = CURDATE()) AS checkedInToday
+                 FROM daily_checkins
+                 WHERE user_id = ?`,
+                [userId]
+            );
+
+            res.json({
+                message: "打卡统计查询成功",
+                data: rows[0]
+            });
+        } catch (error) {
+            console.error("打卡统计查询失败：", error.message);
+            res.status(500).json({
+                message: "打卡统计查询失败，请检查数据库表结构"
+            });
+        }
+    });
+
+    return router;
+};
