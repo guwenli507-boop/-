@@ -39,7 +39,8 @@ app.use("/api/checkins", require("./checkinRoutes")(db));
 
 // 数据统计接口
 app.use("/api/stats", require("./statsRoutes")(db));
-
+//用户监督接口
+app.use("/api/supervision", require("./supervisionRoutes")(db));
 
 
 // ====================
