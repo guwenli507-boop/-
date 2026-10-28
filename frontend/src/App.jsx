@@ -1,16 +1,42 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import './App.css'
 
 function App() {
   const [isLogin, setIsLogin] = useState(true)
-  const [isLoggedIn, setIsLoggedIn] = useState(false)
+
+const [token, setToken] = useState(
+  () => localStorage.getItem('antiProcrastinationToken') || ''
+)
+
+const [isLoggedIn, setIsLoggedIn] = useState(false)
 
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
 
+  
   // 当前页面
   const [currentPage, setCurrentPage] = useState('home')
+  const [checkinDone, setCheckinDone] = useState(false)
+
+  
+  // 好友监督
+  const [userKeyword, setUserKeyword] = useState('')
+  const [searchResults, setSearchResults] = useState([])
+  const [friendships, setFriendships] = useState({
+    receivedInvitations: [],
+    friends: [],
+  })
+  const [friendLoading, setFriendLoading] = useState(false)
+
+
+  // 打卡历史与统计
+  const [checkinHistory, setCheckinHistory] = useState([])
+  const [totalCheckins, setTotalCheckins] = useState(0)
+  const [currentStreak, setCurrentStreak] = useState(0)
+
+
+
 
   // 任务
   const [tasks, setTasks] = useState([])
@@ -21,6 +47,322 @@ function App() {
   const [taskDeadline, setTaskDeadline] = useState('')
 
   const [editingTaskId, setEditingTaskId] = useState(null)
+
+  // 从后端数据库加载当前用户的任务
+const loadTasks = async (authToken) => {
+  if (!authToken) return
+
+  try {
+    const response = await fetch('http://localhost:3000/api/tasks', {
+      headers: {
+        Authorization: `Bearer ${authToken}`,
+      },
+    })
+
+    const data = await response.json()
+
+    if (response.status === 401) {
+      localStorage.removeItem('antiProcrastinationToken')
+      setToken('')
+      setIsLoggedIn(false)
+      setTasks([])
+      return
+    }
+
+    if (!response.ok) {
+      alert(data.message || '获取任务列表失败')
+      return
+    }
+
+    const loadedTasks = (data.tasks || []).map((task) => ({
+      id: task.id,
+      title: task.title,
+      description: task.description || '',
+      deadline: task.deadline
+        ? String(task.deadline).replace('T', ' ').slice(0, 16)
+        : '',
+      completed: task.status === 'completed',
+    }))
+
+    setTasks(loadedTasks)
+  } catch (error) {
+    console.error('获取任务列表失败：', error)
+    alert('无法连接服务器，请确认后端是否正在运行')
+  }
+}
+
+
+  // 搜索可以发送监督邀请的用户
+  const handleSearchUsers = async (e) => {
+    e.preventDefault()
+
+    const keyword = userKeyword.trim()
+
+    if (!keyword) {
+      alert('请输入要搜索的用户名')
+      return
+    }
+
+    if (!token) {
+      alert('登录状态已失效，请重新登录')
+      return
+    }
+
+    setFriendLoading(true)
+
+    try {
+      const response = await fetch(
+        `http://localhost:3000/api/users/search?keyword=${encodeURIComponent(keyword)}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      )
+
+      const data = await response.json()
+
+      if (!response.ok) {
+        alert(data.message || '搜索用户失败')
+        return
+      }
+
+      setSearchResults(data.users || [])
+    } catch (error) {
+      console.error('搜索用户失败：', error)
+      alert('无法连接服务器，请确认后端是否正在运行')
+    } finally {
+      setFriendLoading(false)
+    }
+  }
+
+  // 发送好友监督邀请
+  const handleSendFriendRequest = async (receiverId) => {
+    if (!token) {
+      alert('登录状态已失效，请重新登录')
+      return
+    }
+
+    setFriendLoading(true)
+
+    try {
+      const response = await fetch(
+        'http://localhost:3000/api/friendships',
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({ receiverId }),
+        }
+      )
+
+      const data = await response.json()
+
+      if (!response.ok) {
+        alert(data.message || '发送邀请失败')
+        return
+      }
+
+      alert('监督邀请已发送！')
+
+      // 发送成功后重新搜索，刷新结果
+      await handleSearchUsers({
+        preventDefault: () => {},
+      })
+    } catch (error) {
+      console.error('发送监督邀请失败：', error)
+      alert('无法连接服务器，请确认后端是否正在运行')
+    } finally {
+      setFriendLoading(false)
+    }
+  }
+
+
+
+  // 从后端查询当前用户今天的打卡状态
+  const loadTodayCheckin = async (authToken) => {
+    if (!authToken) return
+
+    try {
+      const response = await fetch(
+        'http://localhost:3000/api/checkins/today',
+        {
+          headers: {
+            Authorization: `Bearer ${authToken}`,
+          },
+        }
+      )
+
+      const data = await response.json()
+
+      if (response.status === 401) {
+        localStorage.removeItem('antiProcrastinationToken')
+        localStorage.removeItem('antiProcrastinationUsername')
+        setToken('')
+        setIsLoggedIn(false)
+        setTasks([])
+        setCheckinDone(false)
+        return
+      }
+
+      if (!response.ok) {
+        console.error('查询今日打卡失败：', data.message)
+        return
+      }
+
+      setCheckinDone(data.checkedIn === true)
+    } catch (error) {
+      console.error('查询今日打卡失败：', error)
+    }
+  }
+
+  
+  // 从后端加载当前用户的打卡历史和统计
+  const loadCheckinHistory = async (authToken) => {
+    if (!authToken) return
+
+    try {
+      const response = await fetch(
+        'http://localhost:3000/api/checkins/history',
+        {
+          headers: {
+            Authorization: `Bearer ${authToken}`,
+          },
+        }
+      )
+
+      const data = await response.json()
+
+      if (!response.ok) {
+        console.error('查询打卡历史失败：', data.message)
+        return
+      }
+
+      setCheckinHistory(
+        Array.isArray(data.dates) ? data.dates : []
+      )
+      setTotalCheckins(data.totalCheckins || 0)
+      setCurrentStreak(data.currentStreak || 0)
+    } catch (error) {
+      console.error('加载打卡历史失败：', error)
+    }
+  }
+
+
+  
+  // 保存当前用户今天的打卡记录
+  const handleCheckin = async () => {
+    if (!token) {
+      alert('登录状态已失效，请重新登录')
+      setIsLoggedIn(false)
+      return
+    }
+
+    if (checkinDone) return
+
+    try {
+      const response = await fetch(
+        'http://localhost:3000/api/checkins',
+        {
+          method: 'POST',
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      )
+
+      const data = await response.json()
+
+      if (response.status === 401) {
+        localStorage.removeItem('antiProcrastinationToken')
+        localStorage.removeItem('antiProcrastinationUsername')
+        setToken('')
+        setIsLoggedIn(false)
+        setCheckinDone(false)
+        return
+      }
+
+      if (response.status === 409) {
+        // 如果今天已经打过卡，同步为已完成状态
+        setCheckinDone(true)
+        alert(data.message || '今天已经打过卡了')
+        return
+      }
+
+      if (!response.ok) {
+        alert(data.message || '打卡失败，请稍后重试')
+        return
+      }
+
+      setCheckinDone(true)
+      alert('今日打卡成功！')
+
+    } catch (error) {
+      console.error('保存打卡失败：', error)
+      alert('无法连接服务器，请确认后端是否正在运行')
+    }
+  }
+
+
+
+useEffect(() => {
+  const savedToken = localStorage.getItem('antiProcrastinationToken')
+  const savedUsername = localStorage.getItem('antiProcrastinationUsername')
+
+  if (!savedToken) return
+
+  const restoreLogin = async () => {
+    try {
+      const response = await fetch('http://localhost:3000/api/tasks', {
+        headers: {
+          Authorization: `Bearer ${savedToken}`,
+        },
+      })
+
+      if (response.status === 401) {
+        localStorage.removeItem('antiProcrastinationToken')
+        setToken('')
+        setIsLoggedIn(false)
+        setTasks([])
+        return
+      }
+
+      if (!response.ok) {
+        console.error('恢复登录失败：', response.status)
+        return
+      }
+
+      const data = await response.json()
+
+      setToken(savedToken)
+      setUsername(savedUsername || '')
+      setIsLoggedIn(true)
+
+      setTasks(
+        (data.tasks || []).map((task) => ({
+          id: task.id,
+          title: task.title,
+          description: task.description || '',
+          deadline: task.deadline
+            ? String(task.deadline).replace('T', ' ').slice(0, 16)
+            : '',
+          completed: task.status === 'completed',
+        }))
+      )
+
+    await loadTodayCheckin(savedToken)  
+    await loadCheckinHistory(savedToken)
+    } catch (error) {
+      console.error('恢复登录状态失败：', error)
+    }
+  }
+
+
+
+  restoreLogin()
+}, [])
 
   // ==================== 登录 / 注册 ====================
 
@@ -53,13 +395,22 @@ function App() {
 
         const data = await response.json()
 
-        if (response.ok) {
-          alert(`登录成功！欢迎你，${data.user.username}`)
-          setIsLoggedIn(true)
-          setCurrentPage('home')
-        } else {
-          alert(data.message || '登录失败')
-        }
+  if (response.ok) {
+    localStorage.setItem('antiProcrastinationToken', data.token)
+    localStorage.setItem('antiProcrastinationUsername', data.user.username)
+    setToken(data.token)
+    setUsername(data.user.username)
+    setIsLoggedIn(true)
+    setCurrentPage('home')
+
+  await loadTasks(data.token)
+  await loadTodayCheckin(data.token)
+  await loadCheckinHistory(data.token)
+
+  alert(`登录成功！欢迎你，${data.user.username}`)
+} else {
+  alert(data.message || '登录失败')
+}
       } catch (error) {
         console.error(error)
         alert('无法连接服务器，请确认后端是否正在运行')
@@ -100,58 +451,131 @@ function App() {
 
   // ==================== 任务功能 ====================
 
-  const handleAddTask = (e) => {
-    e.preventDefault()
+  
+const handleAddTask = async (e) => {
+  e.preventDefault()
 
-    if (!taskTitle.trim()) {
-      alert('请输入任务名称')
+  if (!taskTitle.trim()) {
+    alert('请输入任务名称')
+    return
+  }
+
+  if (!token) {
+    alert('登录状态已失效，请重新登录')
+    setIsLoggedIn(false)
+    return
+  }
+
+  try {
+    const response = await fetch('http://localhost:3000/api/tasks', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        title: taskTitle.trim(),
+        description: taskDescription.trim(),
+        deadline: taskDeadline,
+      }),
+    })
+
+    const data = await response.json()
+
+    if (!response.ok) {
+      alert(data.message || '添加任务失败')
       return
     }
 
-    const newTask = {
-      id: Date.now(),
-      title: taskTitle,
-      description: taskDescription,
-      deadline: taskDeadline,
-      completed: false,
+    const savedTask = {
+      id: data.task.id,
+      title: data.task.title,
+      description: data.task.description || '',
+      deadline: data.task.deadline
+        ? String(data.task.deadline).replace('T', ' ').slice(0, 16)
+        : '',
+      completed: data.task.status === 'completed',
     }
 
-    setTasks([...tasks, newTask])
+    setTasks((previousTasks) => [...previousTasks, savedTask])
 
     setTaskTitle('')
     setTaskDescription('')
     setTaskDeadline('')
     setShowTaskForm(false)
+
+    alert('任务添加成功！')
+  } catch (error) {
+    console.error('添加任务失败：', error)
+    alert('无法连接服务器，请确认后端是否正在运行')
   }
+}
+
 
   const handleEditTask = (task) => {
-    setEditingTaskId(task.id)
+  setEditingTaskId(task.id)
 
-    setTaskTitle(task.title)
-    setTaskDescription(task.description)
-    setTaskDeadline(task.deadline)
+  setTaskTitle(task.title)
+  setTaskDescription(task.description || '')
+  setTaskDeadline(
+    task.deadline ? task.deadline.replace(' ', 'T').slice(0, 16) : ''
+  )
 
-    setShowTaskForm(true)
+  setShowTaskForm(true)
+}
+
+  
+const handleUpdateTask = async (e) => {
+  e.preventDefault()
+
+  if (!taskTitle.trim()) {
+    alert('请输入任务名称')
+    return
   }
 
-  const handleUpdateTask = (e) => {
-    e.preventDefault()
+  if (!token) {
+    alert('登录状态已失效，请重新登录')
+    setIsLoggedIn(false)
+    return
+  }
 
-    if (!taskTitle.trim()) {
-      alert('请输入任务名称')
+  try {
+    const response = await fetch(
+      `http://localhost:3000/api/tasks/${editingTaskId}`,
+      {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          title: taskTitle.trim(),
+          description: taskDescription.trim(),
+          deadline: taskDeadline,
+        }),
+      }
+    )
+
+    const data = await response.json()
+
+    if (!response.ok) {
+      alert(data.message || '修改任务失败')
       return
     }
 
-    setTasks(
-      tasks.map((task) =>
-        task.id === editingTaskId
-          ? {
-              ...task,
-              title: taskTitle,
-              description: taskDescription,
-              deadline: taskDeadline,
-            }
-          : task
+    const updatedTask = {
+      id: data.task.id,
+      title: data.task.title,
+      description: data.task.description || '',
+      deadline: data.task.deadline
+        ? String(data.task.deadline).replace('T', ' ').slice(0, 16)
+        : '',
+      completed: data.task.status === 'completed',
+    }
+
+    setTasks((previousTasks) =>
+      previousTasks.map((task) =>
+        task.id === updatedTask.id ? updatedTask : task
       )
     )
 
@@ -160,7 +584,14 @@ function App() {
     setTaskDeadline('')
     setEditingTaskId(null)
     setShowTaskForm(false)
+
+    alert('任务修改成功！')
+  } catch (error) {
+    console.error('修改任务失败：', error)
+    alert('无法连接服务器，请确认后端是否正在运行')
   }
+}
+
 
   const toggleTask = (id) => {
     setTasks(
@@ -220,15 +651,38 @@ function App() {
               onClick={() => setCurrentPage('tasks')}
             >
               <span>📝</span>
-              <span>我的任务</span>
-            </button>
+             
+        <span>我的任务</span>
+        </button>
 
-            <button
-              className={`nav-item ${
-                currentPage === 'focus' ? 'active' : ''
-              }`}
-              onClick={() => setCurrentPage('focus')}
-            >
+        {/* 监督打卡 */}
+        <button
+          className={`nav-item ${
+            currentPage === 'checkin' ? 'active' : ''
+          }`}
+          onClick={() => setCurrentPage('checkin')}
+        >
+          <span>📅</span>
+          <span>监督打卡</span>
+        </button>
+
+        
+<button
+  className="nav-item"
+  onClick={() => setCurrentPage('friends')}
+>
+  <span className="nav-item-icon">🤝</span>
+  <span>好友监督</span>
+</button>
+
+
+        <button
+          className={`nav-item ${
+            currentPage === 'focus' ? 'active' : ''
+          }`}
+          onClick={() => setCurrentPage('focus')}
+        >
+
               <span>⏱️</span>
               <span>专注</span>
             </button>
@@ -261,10 +715,17 @@ function App() {
             <button
               className="logout-button"
               onClick={() => {
-                setIsLoggedIn(false)
-                setUsername('')
-                setPassword('')
-              }}
+  localStorage.removeItem('antiProcrastinationToken')
+  localStorage.removeItem('antiProcrastinationUsername')
+
+  setToken('')
+  setIsLoggedIn(false)
+  setTasks([])
+  setUsername('')
+  setPassword('')
+  setConfirmPassword('')
+  setCurrentPage('home')
+}}
             >
               退出登录
             </button>
@@ -462,6 +923,267 @@ function App() {
           )}
 
           {/* ==================== 专注页面 ==================== */}
+
+          
+{/* ==================== 监督打卡页面 ==================== */}
+
+
+{currentPage === 'checkin' && (
+  <div className="checkin-page">
+    <div className="page-header">
+      <div>
+        <h1 className="page-title">监督打卡</h1>
+        <p className="page-description">
+          每天完成一次打卡，让目标坚持下去
+        </p>
+      </div>
+    </div>
+
+    {/* 打卡统计 */}
+    <div className="home-stats">
+      <div className="home-stat-card">
+        <span className="stat-icon">✅</span>
+        <div>
+          <strong>{totalCheckins}</strong>
+          <span>累计打卡次数</span>
+        </div>
+      </div>
+
+      <div className="home-stat-card">
+        <span className="stat-icon">🔥</span>
+        <div>
+          <strong>{currentStreak}</strong>
+          <span>当前连续打卡（天）</span>
+        </div>
+      </div>
+    </div>
+
+    {/* 今日打卡 */}
+    <div className="common-card checkin-card">
+      <div className="checkin-icon">
+        {checkinDone ? '🎉' : '📅'}
+      </div>
+
+      <h2>
+        {checkinDone ? '今日打卡已完成' : '今天也来打个卡吧！'}
+      </h2>
+
+      <p>
+        {new Date().toLocaleDateString('zh-CN', {
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric',
+          weekday: 'long',
+        })}
+      </p>
+
+      <div className="checkin-status">
+        {checkinDone
+          ? '你已经完成今天的打卡，继续保持！'
+          : '坚持每天行动，一点点减少拖延。'}
+      </div>
+
+      <button
+        className="primary-button"
+        disabled={checkinDone}
+        onClick={handleCheckin}
+      >
+        {checkinDone ? '今日已打卡 ✓' : '完成今日打卡'}
+      </button>
+    </div>
+
+    {/* 历史打卡记录 */}
+    <div className="common-card checkin-history-card">
+      <h3>📅 我的打卡历史</h3>
+
+      {checkinHistory.length === 0 ? (
+        <p>还没有打卡记录，完成第一次打卡吧！</p>
+      ) : (
+        <div className="checkin-history-list">
+          {checkinHistory.map((date) => (
+            <div
+              className="checkin-history-item"
+              key={date}
+            >
+              <span>✅</span>
+              <span>{date}</span>
+              <span>已打卡</span>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+
+    <div className="common-card checkin-note">
+      <h3>打卡小目标</h3>
+      <p>完成今天的一件重要任务，并为自己的努力打卡。</p>
+      <p className="checkin-note-tip">
+        每一次打卡都会保存到数据库，刷新后仍可查询。
+      </p>
+    </div>
+  </div>
+)}
+
+
+
+{/* ==================== 好友监督页面 ==================== */}
+
+{currentPage === 'friends' && (
+  <div className="friends-page">
+    <div className="page-header">
+      <div>
+        <h1 className="page-title">好友监督</h1>
+        <p className="page-description">
+          和好友互相监督，让每一个目标都更进一步。
+        </p>
+      </div>
+    </div>
+
+    {/* 搜索用户 */}
+    <div className="common-card friends-search-card">
+      <div className="friends-section-heading">
+        <div>
+          <h2>寻找监督伙伴</h2>
+          <p>输入对方的用户名，发送监督邀请。</p>
+        </div>
+        <span className="friends-icon">🔎</span>
+      </div>
+
+      <form className="friends-search-form" onSubmit={handleSearchUsers}>
+        <input
+          type="text"
+          value={userKeyword}
+          onChange={(e) => setUserKeyword(e.target.value)}
+          placeholder="请输入对方的用户名"
+        />
+
+        <button
+          className="primary-button"
+          type="submit"
+          disabled={friendLoading}
+        >
+          {friendLoading ? '请稍候...' : '搜索用户'}
+        </button>
+      </form>
+
+      {searchResults.length > 0 && (
+        <div className="friends-search-results">
+          <h3>搜索结果</h3>
+
+          {searchResults.map((user) => (
+            <div className="friend-user-row" key={user.id}>
+              <div className="friend-user-info">
+                <div className="friend-avatar">
+                  {user.username?.charAt(0)?.toUpperCase() || '友'}
+                </div>
+                <div>
+                  <strong>{user.username}</strong>
+                  <p>邀请对方成为你的监督伙伴</p>
+                </div>
+              </div>
+
+              <button
+                className="secondary-button"
+                type="button"
+                disabled={friendLoading}
+                onClick={() => handleSendFriendRequest(user.id)}
+              >
+                发送邀请
+              </button>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {searchResults.length === 0 && userKeyword.trim() !== '' && (
+        <p className="friends-empty-hint">
+          暂无搜索结果，请先搜索用户。
+        </p>
+      )}
+    </div>
+
+    {/* 收到的监督邀请 */}
+    <div className="common-card friends-list-card">
+      <div className="friends-section-heading">
+        <div>
+          <h2>收到的监督邀请</h2>
+          <p>接受邀请后，即可建立监督关系。</p>
+        </div>
+        <span className="friends-icon">✉️</span>
+      </div>
+
+      {friendships.receivedInvitations.length === 0 ? (
+        <div className="friends-empty">
+          <span>📭</span>
+          <p>暂时没有待处理的邀请</p>
+        </div>
+      ) : (
+        friendships.receivedInvitations.map((invitation) => (
+          <div className="friend-user-row" key={invitation.id}>
+            <div className="friend-user-info">
+              <div className="friend-avatar">
+                {(invitation.username || '友').charAt(0).toUpperCase()}
+              </div>
+              <div>
+                <strong>{invitation.username}</strong>
+                <p>向你发送了监督邀请</p>
+              </div>
+            </div>
+
+            <button
+              className="primary-button"
+              type="button"
+              disabled={friendLoading}
+              onClick={() =>
+                handleAcceptFriendRequest(invitation.id)
+              }
+            >
+              接受邀请
+            </button>
+          </div>
+        ))
+      )}
+    </div>
+
+    {/* 已建立监督关系的好友 */}
+    <div className="common-card friends-list-card">
+      <div className="friends-section-heading">
+        <div>
+          <h2>我的监督好友</h2>
+          <p>查看已经与你建立监督关系的伙伴。</p>
+        </div>
+        <span className="friends-icon">🤝</span>
+      </div>
+
+      {friendships.friends.length === 0 ? (
+        <div className="friends-empty">
+          <span>🌱</span>
+          <p>还没有监督好友，搜索用户名并发送邀请吧。</p>
+        </div>
+      ) : (
+        friendships.friends.map((friend) => (
+          <div className="friend-user-row" key={friend.id}>
+            <div className="friend-user-info">
+              <div className="friend-avatar">
+                {(friend.username || '友').charAt(0).toUpperCase()}
+              </div>
+              <div>
+                <strong>{friend.username}</strong>
+                <p>已建立监督关系</p>
+              </div>
+            </div>
+
+            <span className="friend-status">监督中</span>
+          </div>
+        ))
+      )}
+    </div>
+  </div>
+)}
+
+
+
+
 
           {currentPage === 'focus' && (
             <div className="placeholder-page">

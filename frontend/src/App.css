@@ -5,7 +5,7 @@
 body {
   margin: 0;
   font-family: Arial, "Microsoft YaHei", sans-serif;
-  background: #f5f7fb;
+  background: #F3F5F5;
   color: #1f2937;
 }
 
@@ -22,12 +22,12 @@ input {
   justify-content: center;
   align-items: center;
   padding: 20px;
-  background: linear-gradient(135deg, #eef4ff, #f8faff);
+  background: linear-gradient(135deg, #DCE6DF, #F3F5F5);
 }
 
 .auth-card {
   width: 420px;
-  background: white;
+  background: #F7F2E4;
   border-radius: 18px;
   padding: 40px;
   box-shadow: 0 15px 40px rgba(0, 0, 0, 0.08);
@@ -67,8 +67,8 @@ input {
 }
 
 .auth-tabs button.active {
-  color: #4f7cff;
-  border-bottom: 2px solid #4f7cff;
+  color: #5CB87B;
+  border-bottom: 2px solid #5CB87B;
 }
 
 .auth-form {
@@ -91,7 +91,7 @@ input {
 
 .form-group input {
   height: 44px;
-  border: 1px solid #dfe3ea;
+  border: 1px solid #DCE6DF;
   border-radius: 9px;
   padding: 0 14px;
   font-size: 14px;
@@ -100,16 +100,16 @@ input {
 }
 
 .form-group input:focus {
-  border-color: #4f7cff;
-  box-shadow: 0 0 0 3px rgba(79, 124, 255, 0.1);
+  border-color: #5CB87B;
+  box-shadow: 0 0 0 3px rgba(92, 184, 123, 0.15);
 }
 
 .submit-button {
   height: 46px;
   border: none;
   border-radius: 9px;
-  background: #4f7cff;
-  color: white;
+  background: #5CB87B;
+  color: #F7F2E4;
   font-size: 16px;
   cursor: pointer;
   margin-top: 5px;
@@ -117,7 +117,7 @@ input {
 }
 
 .submit-button:hover {
-  background: #3d68e6;
+  background: #459A63;
   transform: translateY(-1px);
 }
 
@@ -131,7 +131,7 @@ input {
 .switch-text button {
   border: none;
   background: none;
-  color: #4f7cff;
+  color: #5CB87B;
   cursor: pointer;
   margin-left: 5px;
 }
@@ -141,7 +141,7 @@ input {
 .task-page {
   min-height: 100vh;
   padding: 40px 60px;
-  background: #f5f7fb;
+  background: #F3F5F5;
 }
 
 /* 顶部区域 */
@@ -154,7 +154,7 @@ input {
   justify-content: space-between;
   align-items: center;
 
-  background: white;
+  background: #F7F2E4;
   padding: 28px 32px;
   border-radius: 18px;
 
@@ -177,8 +177,8 @@ input {
 /* 退出登录 */
 
 .logout-button {
-  border: 1px solid #e1e5ec;
-  background: white;
+  border: 1px solid #DCE6DF;
+  background: #F7F2E4;
   color: #6b7280;
 
   padding: 10px 18px;
@@ -201,7 +201,7 @@ input {
   max-width: 1100px;
   margin: 0 auto;
 
-  background: white;
+  background: #F7F2E4;
   padding: 30px 32px;
 
   border-radius: 18px;
@@ -229,8 +229,8 @@ input {
 
 .add-task-button {
   border: none;
-  background: #4f7cff;
-  color: white;
+  background: #5CB87B;
+  color: #F7F2E4;
 
   padding: 11px 20px;
   border-radius: 9px;
@@ -243,7 +243,7 @@ input {
 }
 
 .add-task-button:hover {
-  background: #3d68e6;
+  background: #459A63;
   transform: translateY(-1px);
 }
 
@@ -257,10 +257,10 @@ input {
   justify-content: center;
   align-items: center;
 
-  border: 1px dashed #dfe4ec;
+  border: 1px dashed #DCE6DF;
   border-radius: 14px;
 
-  background: #fafbfc;
+  background: #F3F5F5;
 
   text-align: center;
 }
@@ -273,7 +273,7 @@ input {
   justify-content: center;
   align-items: center;
 
-  background: #eef3ff;
+  background: #DCE6DF;
   border-radius: 50%;
 
   font-size: 32px;
@@ -346,21 +346,21 @@ input {
 
   padding: 18px 20px;
 
-  border: 1px solid #edf0f5;
+  border: 1px solid #DCE6DF;
   border-radius: 12px;
 
-  background: white;
+  background: #F7F2E4;
 
   transition: 0.2s;
 }
 
 .task-item:hover {
-  border-color: #dce4f7;
+  border-color: #DCE6DF;
   box-shadow: 0 5px 18px rgba(31, 41, 55, 0.05);
 }
 
 .task-item.completed {
-  background: #fafbfc;
+  background: #F3F5F5;
 }
 
 .task-check {
@@ -374,9 +374,9 @@ input {
   border: 2px solid #cdd4df;
   border-radius: 50%;
 
-  background: white;
+  background: #F7F2E4;
 
-  color: white;
+  color: #F7F2E4;
   font-size: 14px;
   font-weight: bold;
 
@@ -388,8 +388,8 @@ input {
 }
 
 .task-item.completed .check-button {
-  border-color: #4f7cff;
-  background: #4f7cff;
+  border-color: #5CB87B;
+  background: #5CB87B;
 }
 
 .task-info {
@@ -456,7 +456,7 @@ input {
   width: 480px;
   max-width: 100%;
 
-  background: white;
+  background: #F7F2E4;
 
   border-radius: 16px;
 
@@ -505,7 +505,7 @@ input {
 .task-modal textarea {
   min-height: 100px;
 
-  border: 1px solid #dfe3ea;
+  border: 1px solid #DCE6DF;
   border-radius: 9px;
 
   padding: 12px 14px;
@@ -518,15 +518,15 @@ input {
 }
 
 .task-modal textarea:focus {
-  border-color: #4f7cff;
+  border-color: #5CB87B;
 
-  box-shadow: 0 0 0 3px rgba(79, 124, 255, 0.1);
+  box-shadow: 0 0 0 3px rgba(92, 184, 123, 0.15);
 }
 
 .task-modal input[type="datetime-local"] {
   height: 44px;
 
-  border: 1px solid #dfe3ea;
+  border: 1px solid #DCE6DF;
   border-radius: 9px;
 
   padding: 0 12px;
@@ -537,9 +537,9 @@ input {
 }
 
 .task-modal input[type="datetime-local"]:focus {
-  border-color: #4f7cff;
+  border-color: #5CB87B;
 
-  box-shadow: 0 0 0 3px rgba(79, 124, 255, 0.1);
+  box-shadow: 0 0 0 3px rgba(92, 184, 123, 0.15);
 }
 
 /* 弹窗底部按钮 */
@@ -567,24 +567,24 @@ input {
 }
 
 .cancel-button {
-  border: 1px solid #dfe3ea;
-  background: white;
+  border: 1px solid #DCE6DF;
+  background: #F7F2E4;
   color: #6b7280;
 }
 
 .cancel-button:hover {
-  background: #f7f8fa;
+  background: #F3F5F5;
 }
 
 .confirm-button {
   border: none;
-  background: #4f7cff;
-  color: white;
+  background: #5CB87B;
+  color: #F7F2E4;
   font-weight: 600;
 }
 
 .confirm-button:hover {
-  background: #3d68e6;
+  background: #459A63;
 }
 
 /* 手机端 */
@@ -606,9 +606,9 @@ input {
 /* ==================== 编辑任务按钮 ==================== */
 
 .edit-task-button {
-  border: 1px solid #dfe5f2;
-  background: #f8faff;
-  color: #4f7cff;
+  border: 1px solid #DCE6DF;
+  background: #F3F5F5;
+  color: #5CB87B;
 
   padding: 7px 12px;
   border-radius: 7px;
@@ -620,8 +620,8 @@ input {
 }
 
 .edit-task-button:hover {
-  background: #eef3ff;
-  border-color: #bfcdf5;
+  background: #DCE6DF;
+  border-color: #B7D5C1;
 }
 
 /* ==================== 主界面 + 左侧导航栏 ==================== */
@@ -629,15 +629,15 @@ input {
 .app-layout {
   min-height: 100vh;
   display: flex;
-  background: #f5f7fb;
+  background: #F3F5F5;
 }
 
 /* 左侧导航栏 */
 .sidebar {
   width: 250px;
   min-height: 100vh;
-  background: white;
-  border-right: 1px solid #edf0f5;
+  background: #F7F2E4;
+  border-right: 1px solid #DCE6DF;
   padding: 28px 18px;
   display: flex;
   flex-direction: column;
@@ -659,7 +659,7 @@ input {
   width: 42px;
   height: 42px;
   border-radius: 11px;
-  background: #eef3ff;
+  background: #DCE6DF;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -703,13 +703,13 @@ input {
 }
 
 .nav-item:hover {
-  background: #f5f7fb;
-  color: #4f7cff;
+  background: #F3F5F5;
+  color: #5CB87B;
 }
 
 .nav-item.active {
-  background: #eef3ff;
-  color: #4f7cff;
+  background: #DCE6DF;
+  color: #5CB87B;
   font-weight: 600;
 }
 
@@ -729,7 +729,7 @@ input {
   align-items: center;
   gap: 10px;
   padding: 15px 10px;
-  border-top: 1px solid #edf0f5;
+  border-top: 1px solid #DCE6DF;
   margin-bottom: 10px;
 }
 
@@ -737,8 +737,8 @@ input {
   width: 36px;
   height: 36px;
   border-radius: 50%;
-  background: #4f7cff;
-  color: white;
+  background: #5CB87B;
+  color: #F7F2E4;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -806,7 +806,7 @@ input {
   margin: 0 auto 25px;
   padding: 32px 36px;
   border-radius: 18px;
-  background: linear-gradient(135deg, #eef3ff, #f7f9ff);
+  background: linear-gradient(135deg, #DCE6DF, #F7F2E4);
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -826,8 +826,8 @@ input {
 
 .home-action-button {
   border: none;
-  background: #4f7cff;
-  color: white;
+  background: #5CB87B;
+  color: #F7F2E4;
   padding: 11px 20px;
   border-radius: 9px;
   font-size: 14px;
@@ -835,14 +835,14 @@ input {
 }
 
 .home-action-button:hover {
-  background: #3d68e6;
+  background: #459A63;
 }
 
 .welcome-icon {
   width: 110px;
   height: 110px;
   border-radius: 50%;
-  background: white;
+  background: #F7F2E4;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -859,7 +859,7 @@ input {
 }
 
 .home-stat-card {
-  background: white;
+  background: #F7F2E4;
   border-radius: 15px;
   padding: 22px;
   display: flex;
@@ -872,7 +872,7 @@ input {
   width: 48px;
   height: 48px;
   border-radius: 12px;
-  background: #f3f6ff;
+  background: #DCE6DF;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -906,7 +906,7 @@ input {
   width: 80px;
   height: 80px;
   border-radius: 50%;
-  background: #eef3ff;
+  background: #DCE6DF;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -1009,3 +1009,347 @@ input {
     display: none;
   }
 }
+
+
+/* ==================== 监督打卡页面 ==================== */
+
+.checkin-page {
+  max-width: 1100px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.checkin-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 45px 30px;
+  margin-bottom: 24px;
+  border: 1px solid #DCE6DF;
+  border-radius: 18px;
+  background: #F7F2E4;
+  box-shadow: 0 8px 30px rgba(31, 41, 55, 0.05);
+}
+
+.checkin-icon {
+  width: 88px;
+  height: 88px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: #DCE6DF;
+  font-size: 42px;
+  margin-bottom: 22px;
+}
+
+.checkin-card h2 {
+  margin: 0 0 12px;
+  font-size: 24px;
+  color: #1f2937;
+}
+
+.checkin-card > p {
+  margin: 0 0 18px;
+  color: #8b95a7;
+  font-size: 14px;
+}
+
+.checkin-status {
+  margin-bottom: 24px;
+  color: #6b7280;
+  font-size: 14px;
+  line-height: 1.7;
+}
+
+.primary-button {
+  border: none;
+  border-radius: 9px;
+  padding: 12px 26px;
+  background: #5CB87B;
+  color: #F7F2E4;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.primary-button:hover:not(:disabled) {
+  background: #459A63;
+  transform: translateY(-1px);
+}
+
+.primary-button:disabled {
+  background: #DCE6DF;
+  color: #6b7280;
+  cursor: not-allowed;
+}
+
+.checkin-note {
+  padding: 25px 28px;
+  border: 1px solid #DCE6DF;
+  border-radius: 15px;
+  background: #F7F2E4;
+}
+
+.checkin-note h3 {
+  margin: 0 0 12px;
+  font-size: 18px;
+  color: #374151;
+}
+
+.checkin-note p {
+  margin: 0 0 10px;
+  font-size: 14px;
+  line-height: 1.8;
+  color: #6b7280;
+}
+
+.checkin-note .checkin-note-tip {
+  margin-bottom: 0;
+  color: #8b95a7;
+  font-size: 12px;
+}
+
+@media (max-width: 700px) {
+  .checkin-card {
+    padding: 32px 18px;
+  }
+
+  .checkin-card h2 {
+    font-size: 21px;
+  }
+
+  .checkin-note {
+    padding: 22px;
+  }
+}
+
+
+/* ==================== 好友监督页面 ==================== */
+
+.friends-page {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.friends-search-card,
+.friends-list-card {
+  padding: 26px;
+  border-radius: 18px;
+}
+
+.friends-section-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 22px;
+}
+
+.friends-section-heading h2 {
+  margin: 0 0 8px;
+  color: #30483a;
+  font-size: 20px;
+}
+
+.friends-section-heading p {
+  margin: 0;
+  color: #78857c;
+  font-size: 14px;
+}
+
+.friends-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  flex-shrink: 0;
+  border-radius: 15px;
+  background: #dce6df;
+  font-size: 22px;
+}
+
+.friends-search-form {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.friends-search-form input {
+  flex: 1;
+  min-width: 0;
+  height: 46px;
+  padding: 0 15px;
+  border: 1px solid #dce6df;
+  border-radius: 12px;
+  outline: none;
+  background: #f8faf8;
+  color: #30483a;
+  font-size: 14px;
+}
+
+.friends-search-form input:focus {
+  border-color: #5cb87b;
+  box-shadow: 0 0 0 3px rgba(92, 184, 123, 0.12);
+}
+
+.friends-search-form button,
+.friend-user-row button {
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+.friends-search-results {
+  margin-top: 26px;
+  padding-top: 20px;
+  border-top: 1px solid #edf0eb;
+}
+
+.friends-search-results h3 {
+  margin: 0 0 14px;
+  color: #405448;
+  font-size: 16px;
+}
+
+.friend-user-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 16px 0;
+  border-bottom: 1px solid #edf0eb;
+}
+
+.friend-user-row:last-child {
+  border-bottom: none;
+}
+
+.friend-user-info {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  min-width: 0;
+}
+
+.friend-avatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  flex-shrink: 0;
+  border-radius: 14px;
+  background: #dce6df;
+  color: #3e7954;
+  font-size: 17px;
+  font-weight: 700;
+}
+
+.friend-user-info strong {
+  color: #34483a;
+  font-size: 15px;
+  overflow-wrap: anywhere;
+}
+
+.friend-user-info p {
+  margin: 5px 0 0;
+  color: #849087;
+  font-size: 13px;
+}
+
+.friend-status {
+  padding: 7px 12px;
+  border-radius: 20px;
+  background: #e5f3e8;
+  color: #408052;
+  font-size: 13px;
+  white-space: nowrap;
+}
+
+.friends-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 28px 12px;
+  border-radius: 14px;
+  background: #f8faf8;
+  text-align: center;
+}
+
+.friends-empty span {
+  font-size: 28px;
+}
+
+.friends-empty p,
+.friends-empty-hint {
+  margin: 0;
+  color: #849087;
+  font-size: 14px;
+}
+
+.friends-empty-hint {
+  margin-top: 16px;
+}
+
+@media (max-width: 600px) {
+  .friends-search-card,
+  .friends-list-card {
+    padding: 18px;
+  }
+
+  .friends-search-form {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .friends-search-form button {
+    width: 100%;
+  }
+
+  .friend-user-row {
+    align-items: flex-start;
+  }
+
+  .friend-user-row button {
+    padding: 9px 12px;
+    font-size: 13px;
+  }
+}
+
+
+/* 好友监督：发送邀请按钮 */
+.friends-search-results .friend-user-row .secondary-button {
+  min-height: 38px;
+  padding: 0 18px;
+  border: 1px solid #c8e5d0;
+  border-radius: 10px;
+  background: #edf7ef;
+  color: #43875a;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    background 0.2s ease,
+    color 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.friends-search-results .friend-user-row .secondary-button:hover:not(:disabled) {
+  background: #5cb87b;
+  border-color: #5cb87b;
+  color: #ffffff;
+  transform: translateY(-1px);
+}
+
+.friends-search-results .friend-user-row .secondary-button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
