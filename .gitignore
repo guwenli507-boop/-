@@ -1,2 +1,6 @@
 backend/node_modules/
 backend/.env
+*.bak
+*.before-style
+*.before-achievements-style
+*.before-points-style
